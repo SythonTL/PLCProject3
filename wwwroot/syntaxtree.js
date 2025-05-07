@@ -100,6 +100,8 @@ function update() {
   }
 }
 
+window.update = update;
+
 function validateTokens(tokens) {
   if (tokens.length < 3) throw 'Phrase too short';
   if (tokens[0].type != Tokenizer.TokenType.BRACKET_OPEN ||

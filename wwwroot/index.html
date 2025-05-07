@@ -90,6 +90,9 @@
         }
         const data = await response.json();
         bracketInput.value = data.result;
+
+        // Trigger re-rendering of the tree
+        update();
       } catch (error) {
         console.error("Error:", error);
       }

@@ -68,6 +68,22 @@ label {
   width: 96%;
 }
 
+#mlInput {
+  margin: 15px auto;
+  width: 96%;
+}
+
+#sendInput {
+  padding: 5px 15px;
+  border-radius: 4px;
+}
+
+#sendInput:hover {
+  background-color: black;
+  color: white;
+  cursor: pointer;
+}
+
 #tree {
   display: flex;
   align-items: center;

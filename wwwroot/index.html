@@ -43,6 +43,12 @@
   <input type="range" id="spacing" min="75" max="150" value="100" />
 </div>
 
+<div id="mlInput">
+  <h2>Phrase (ML notation)</h2>
+  <textarea rows="5" id="mlCode"></textarea>
+  <button id="sendInput">Parse</button>
+</div>
+
 <div id="input">
   <h2>Phrase (labelled bracket notation)</h2>
   <textarea rows="5" id="code">[S [NP jsSyntaxTree][VP [V creates][NP nice syntax trees ->1]]]</textarea>
@@ -60,3 +66,33 @@
   <a href="https://github.com/int2str/jssyntaxtree">https://github.com/int2str/jssyntaxtree</a>
   <div id="version">&nbsp;</div>
 </footer>
+
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const mlInput = document.getElementById("mlCode");
+    const bracketInput = document.getElementById("code");
+    const sendButton = document.getElementById("sendInput");
+
+    sendButton.addEventListener("click", async () => {
+      const userInput = mlInput.value;
+
+      try {
+        const response = await fetch("/api/parseToBracket", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ mlInput: userInput})
+        });
+
+        if (!response.ok) {
+          throw new Error("Failed to parse input");
+        }
+        const data = await response.json();
+        bracketInput.value = data.result;
+      } catch (error) {
+        console.error("Error:", error);
+      }
+    })
+  })
+</script>

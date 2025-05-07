@@ -2,9 +2,15 @@ open Giraffe
 open System
 open Microsoft.AspNetCore.Builder
 open Microsoft.Extensions.Hosting
+open Microsoft.AspNetCore.Http
+open System.Text.Json
 
 open Parse
 open Fun
+
+type MlInput = { mlInput: string}
+
+type Response = { result: string }
 
 [<EntryPoint>]
 let main args =
@@ -14,12 +20,23 @@ let main args =
     let app = builder.Build()
     app.UseStaticFiles() |> ignore
 
+    let parseToBracketHandler =
+        fun (next: HttpFunc) (ctx: HttpContext) ->
+            task {
+                let! input = ctx.BindJsonAsync<MlInput>()
+
+                let parsedResult = print (fromString input.mlInput)
+
+                let response = { result = parsedResult }
+
+                return! json response next ctx
+            }
 
     // app.MapGet("/", Func<string>(fun () -> "Hello World!")) |> ignore
     let webApp =
         choose [
             route "/" >=> htmlFile "./wwwroot/index.html"
-            // your other routes
+            route "/api/parseToBracket" >=> parseToBracketHandler
         ]
     app.UseGiraffe(webApp)
 
